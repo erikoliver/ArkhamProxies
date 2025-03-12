@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0385862B2D814AEF00778C77 /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 038586272D814AEF00778C77 /* LICENSE.txt */; };
 		0385862C2D814AEF00778C77 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 038586282D814AEF00778C77 /* README.md */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +32,7 @@
 		033C96A72D7E4D8E0094D251 /* Arkham Proxies.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Arkham Proxies.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		033C96B82D7E4D8F0094D251 /* Arkham ProxiesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Arkham ProxiesTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		033C96C22D7E4D8F0094D251 /* Arkham ProxiesUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Arkham ProxiesUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		038586272D814AEF00778C77 /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		038586282D814AEF00778C77 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -81,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				038586282D814AEF00778C77 /* README.md */,
+				038586272D814AEF00778C77 /* LICENSE.txt */,
 				033C96A92D7E4D8E0094D251 /* Arkham Proxies */,
 				033C96BB2D7E4D8F0094D251 /* Arkham ProxiesTests */,
 				033C96C52D7E4D8F0094D251 /* Arkham ProxiesUITests */,
@@ -218,6 +221,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0385862B2D814AEF00778C77 /* LICENSE.txt in Resources */,
 				0385862C2D814AEF00778C77 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
