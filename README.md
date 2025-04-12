@@ -40,4 +40,4 @@ When you are happy with what is shown click print and you can either directly pr
 
 Source is here on Github.
 
-Notarized Mac Binary is under [releases](https://github.com/erikoliver/ArkhamProxies/releases/tag/release)
+Notarized Mac Binary is under [releases](https://github.com/erikoliver/ArkhamProxies/releases)
