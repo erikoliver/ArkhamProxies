@@ -10,7 +10,8 @@ import PDFKit
 struct CardQuantity: Identifiable, Hashable {
     let id: UUID = UUID()    // unique for each instance
     let cardID: String       // the actual card id from the deck JSON
-    let quantity: Int
+    var quantity: Int
+    var isSelected: Bool = true
 }
 // Struct representing local URLs for card images
 struct CardImageURLs {
@@ -54,6 +55,39 @@ class DeckViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     @Published var cards: [CardQuantity] = []
+
+    var selectedCards: [CardQuantity] {
+        cards.filter { $0.isSelected }
+    }
+
+    @discardableResult
+    func addCard(cardID: String, quantity: String) -> Bool {
+        let cardID = cardID.trimmingCharacters(in: .whitespacesAndNewlines)
+        let quantity = quantity.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cardID.isEmpty, cardID.allSatisfy({ $0 >= "0" && $0 <= "9" }) else {
+            errorMessage = "Enter a numeric card number, such as 06113."
+            return false
+        }
+        guard !quantity.isEmpty, quantity.allSatisfy({ $0 >= "0" && $0 <= "9" }),
+              let count = Int(quantity), count > 0 else {
+            errorMessage = "Enter a quantity greater than zero."
+            return false
+        }
+
+        if let index = cards.firstIndex(where: { $0.cardID == cardID }) {
+            let (total, overflow) = cards[index].quantity.addingReportingOverflow(count)
+            guard !overflow else {
+                errorMessage = "The quantity is too large."
+                return false
+            }
+            cards[index].quantity = total
+            cards[index].isSelected = true
+        } else {
+            cards.append(CardQuantity(cardID: cardID, quantity: count))
+        }
+        errorMessage = nil
+        return true
+    }
     
     func fetchDeck() {
         guard !deckID.isEmpty else { return }
@@ -148,6 +182,7 @@ class DeckViewModel: ObservableObject {
             self.cards = cardList
             // Optionally store raw JSON for debugging.
             self.deckData = String(data: data, encoding: .utf8) ?? ""
+            self.errorMessage = nil
         } catch {
             self.errorMessage = "Failed to decode deck JSON: \(error.localizedDescription)"
         }
@@ -350,10 +385,11 @@ struct Arkham_ProxiesApp: App {
 
 extension DeckViewModel {
     func printDeck() {
+        guard !selectedCards.isEmpty else { return }
         #if os(macOS)
         // Build an array of NSImage objects from the file cache.
         var imagesToPrint: [NSImage] = []
-        for card in self.cards {
+        for card in selectedCards {
             if let urls = self.cachedCardImageURLs(for: card.cardID) {
                 let isDoubleSided = (urls.backLocalURL != nil)
                 for _ in 0..<card.quantity {

@@ -4,6 +4,8 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var viewModel: DeckViewModel
+    @State private var manualCardID = ""
+    @State private var manualQuantity = "1"
     
     var body: some View {
         VStack(spacing: 16) {
@@ -57,10 +59,28 @@ struct ContentView: View {
                             .foregroundColor(.white)
                             .cornerRadius(8)
                     }
-                    .disabled(viewModel.deckData.isEmpty)
+                    .disabled(viewModel.selectedCards.isEmpty || viewModel.isLoading)
                     .buttonStyle(.plain)
                 }
                 .padding(.horizontal, 0) // Remove extra horizontal padding
+
+                HStack(spacing: 12) {
+                    TextField("Card # (e.g. 06113)", text: $manualCardID)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .accessibilityLabel("Card number")
+                    Text("Quantity")
+                    TextField("Quantity", text: $manualQuantity)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .frame(width: 70)
+                        .accessibilityLabel("Quantity")
+                    Button("Add Card") {
+                        if viewModel.addCard(cardID: manualCardID, quantity: manualQuantity) {
+                            manualCardID = ""
+                        }
+                    }
+                    .disabled(viewModel.isLoading)
+                }
+                .padding(.horizontal)
                 
                 if viewModel.isLoading {
                     ProgressView("Loading...")
@@ -82,8 +102,8 @@ struct ContentView: View {
             Divider()
             
             // Main content area: a scrolling list of card rows
-            List(viewModel.cards) { card in
-                CardRowView(card: card, viewModel: viewModel)
+            List($viewModel.cards) { $card in
+                CardRowView(card: $card, viewModel: viewModel)
             }
             .listStyle(PlainListStyle())
         }
@@ -92,7 +112,7 @@ struct ContentView: View {
 
 // A single row in the list: shows the card ID, quantity, and the card image(s)
 struct CardRowView: View {
-    let card: CardQuantity
+    @Binding var card: CardQuantity
     @ObservedObject var viewModel: DeckViewModel
     
     @State private var cardImage: Image? = nil
@@ -100,6 +120,12 @@ struct CardRowView: View {
     
     var body: some View {
         HStack(spacing: 16) {
+            Toggle("Print card \(card.cardID)", isOn: $card.isSelected)
+                .labelsHidden()
+                #if os(macOS)
+                .toggleStyle(.checkbox)
+                #endif
+
             // Horizontal stack for card images
             HStack(spacing: 8) {
                 if let cardImage = cardImage {
